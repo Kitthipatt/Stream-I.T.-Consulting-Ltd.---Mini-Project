@@ -1,0 +1,111 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class LoanApprovalSystem {
+    private Map<Integer, LoanApplication> applications;
+    private int nextApplicationId;
+
+    public LoanApprovalSystem() {
+        applications = new HashMap<>();
+        nextApplicationId = 1;
+    }
+
+    public void requestForm(String name, double amount) {
+        LoanApplication application = new LoanApplication(nextApplicationId++, name, amount);
+        applications.put(application.getId(), application);
+        System.out.println("Loan application submitted successfully. Application ID: " + application.getId());
+    }
+
+    public void approveForm(int applicationId) {
+        LoanApplication application = applications.get(applicationId);
+        if (application != null) {
+            application.approve();
+            System.out.println("Loan application approved. Application ID: " + application.getId());
+        } else {
+            System.out.println("Loan application not found.");
+        }
+    }
+
+    public void displayDashboard() {
+        System.out.println("Loan Approval System Dashboard");
+        System.out.println("-------------------------------");
+        for (LoanApplication application : applications.values()) {
+            System.out.println("Application ID: " + application.getId() + ", Name: " + application.getName() + ", Amount: " + application.getAmount() + ", Status: " + application.getStatus());
+        }
+    }
+
+    public static void main(String[] args) {
+        LoanApprovalSystem system = new LoanApprovalSystem();
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("Loan Approval System Menu");
+            System.out.println("1. Request Form");
+            System.out.println("2. Approve Form");
+            System.out.println("3. Display Dashboard");
+            System.out.println("4. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter your name: ");
+                    String name = scanner.next();
+                    System.out.print("Enter loan amount: ");
+                    double amount = scanner.nextDouble();
+                    system.requestForm(name, amount);
+                    break;
+                case 2:
+                    System.out.print("Enter application ID to approve: ");
+                    int applicationId = scanner.nextInt();
+                    system.approveForm(applicationId);
+                    break;
+                case 3:
+                    system.displayDashboard();
+                    break;
+                case 4:
+                    System.out.println("Exiting program...");
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+                    break;
+            }
+        }
+    }
+}
+
+class LoanApplication {
+    private int id;
+    private String name;
+    private double amount;
+    private boolean approved;
+
+    public LoanApplication(int id, String name, double amount) {
+        this.id = id;
+        this.name = name;
+        this.amount = amount;
+        this.approved = false;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public String getStatus() {
+        return approved ? "Approved" : "Pending";
+    }
+
+    public void approve() {
+        this.approved = true;
+    }
+}
